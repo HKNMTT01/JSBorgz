@@ -1,0 +1,1 @@
+function togglePassword() { const p = document.getElementById('password'); if (!p) return; p.type = p.type === 'password' ? 'text' : 'password'; event.currentTarget.textContent = p.type === 'password' ? 'Show' : 'Hide' }

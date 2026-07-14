@@ -1,0 +1,49 @@
+{% extends 'base.html' %}{% block content %}<div class="page-head">
+    <div><span class="eyebrow">Payslip</span>
+        <h1>{{ payslip.period.name }}</h1>
+        <p>{{ payslip.employee.display_name }} · Pay date {{ payslip.period.pay_date }}</p>
+    </div>
+    <div class="head-actions"><button class="btn" onclick="window.print()">Print</button>{% if payslip.status != 'RELEASED' and user.is_hr_admin %}<form method="post" action="{% url 'payslip_release' payslip.pk %}">{% csrf_token %}<button class="btn primary">Release</button></form>{% endif %}</div>
+</div>
+<section class="panel payslip-sheet">
+    <div class="panel-head">
+        <div>
+            <h2>JETAMA SDN. BHD.</h2>
+            <p>Employee salary statement</p>
+        </div><span class="status {{ payslip.status|lower }}">{{ payslip.get_status_display }}</span>
+    </div>
+    <dl class="info-list">
+        <div>
+            <dt>Employee</dt>
+            <dd>{{ payslip.employee.display_name }}</dd>
+        </div>
+        <div>
+            <dt>Position</dt>
+            <dd>{{ payslip.employee.position|default:'-' }}</dd>
+        </div>
+        <div>
+            <dt>Basic salary</dt>
+            <dd>RM {{ payslip.basic_salary|floatformat:2 }}</dd>
+        </div>
+        <div>
+            <dt>Allowances</dt>
+            <dd>RM {{ payslip.allowances|floatformat:2 }}</dd>
+        </div>
+        <div>
+            <dt>Overtime</dt>
+            <dd>RM {{ payslip.overtime|floatformat:2 }}</dd>
+        </div>
+        <div>
+            <dt>Gross pay</dt>
+            <dd>RM {{ payslip.gross_pay|floatformat:2 }}</dd>
+        </div>
+        <div>
+            <dt>Deductions</dt>
+            <dd>RM {{ payslip.deductions|floatformat:2 }}</dd>
+        </div>
+        <div>
+            <dt><strong>Net pay</strong></dt>
+            <dd><strong>RM {{ payslip.net_pay|floatformat:2 }}</strong></dd>
+        </div>
+    </dl>
+</section>{% endblock %}

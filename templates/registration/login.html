@@ -1,0 +1,38 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Sign in · JETAMA PeopleOS{% endblock %}{% block public_content %}
+<div class="login-shell">
+    <section class="login-visual">
+        <img class="login-logo" src="{% static 'images/JETAMA SDN BHD LOGO (TRANSPARENT).png' %}" alt="JETAMA">
+        <div class="login-copy"><span>JETAMA PEOPLEOS</span>
+            <h1>One workplace.<br>One connected team.</h1>
+            <p>Securely manage people, attendance, leave, claims, documents and workforce insights from one modern
+                platform.</p>
+            <div class="visual-stat"><strong>HR & ESG</strong><span>Management Suite</span>
+            </div>
+        </div>
+    </section>
+    <section class="login-panel">
+        <div class="login-card">
+            <div class="mobile-logo"><img src="{% static 'images/JETAMA SDN BHD LOGO (TRANSPARENT).png' %}">
+            </div><span class="eyebrow">Welcome back</span>
+            <h2>Sign in to PeopleOS</h2>
+            <p>Enter your company account details to continue.</p>
+            <form method="post">{% csrf_token %}{% if form.non_field_errors %}
+                <div class="alert error">Invalid email or password. Please try again.</div>
+                {% endif %}<div class="field"><label>Email address</label>
+                    <input type="email" name="username" autofocus required placeholder="name@jetama.com.my">
+                </div>
+                <div class="field"><label>Password</label>
+                    <div class="password-wrap">
+                        <input id="password" type="password" name="password" required placeholder="Enter your password">
+                        <button type="button" onclick="togglePassword()">Show</button>
+                    </div>
+                </div>
+                <div class="login-options"><label><input type="checkbox"> Remember me</label>
+                    <a href="#">Forgot password?</a>
+                </div><button class="btn primary wide" type="submit">Sign in securely →</button>
+            </form><small class="security-note">Protected by encrypted authentication and role-based access.</small>
+        </div>
+    </section>
+</div>
+{% endblock %}

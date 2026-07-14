@@ -1,0 +1,41 @@
+{% extends 'base.html' %}{% block title %}Payroll | PeopleOS{% endblock %}{% block content %}<div class="page-head">
+    <div><span class="eyebrow">Finance & People</span>
+        <h1>Payroll</h1>
+        <p>Salary periods, payslips, earnings and deductions.</p>
+    </div>{% if can_manage %}<div class="head-actions"><a class="btn ghost" href="{% url 'payroll_period_create' %}">New
+            period</a><a class="btn primary" href="{% url 'payslip_create' %}">Create payslip</a></div>{% endif %}
+</div>
+<section class="panel">
+    <div class="panel-head">
+        <div>
+            <h2>Payslips</h2>
+            <p>Employees only see released payslips.</p>
+        </div>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Period</th>
+                    <th>Gross</th>
+                    <th>Deductions</th>
+                    <th>Net pay</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>{% for s in slips %}<tr>
+                    <td>{{ s.employee.display_name }}</td>
+                    <td>{{ s.period.name }}</td>
+                    <td>RM {{ s.gross_pay|floatformat:2 }}</td>
+                    <td>RM {{ s.deductions|floatformat:2 }}</td>
+                    <td><strong>RM {{ s.net_pay|floatformat:2 }}</strong></td>
+                    <td><span class="status {{ s.status|lower }}">{{ s.get_status_display }}</span></td>
+                    <td><a class="btn small" href="{% url 'payslip_detail' s.pk %}">Open</a></td>
+                </tr>{% empty %}<tr>
+                    <td colspan="7" class="empty-cell">No payslips yet.</td>
+                </tr>{% endfor %}</tbody>
+        </table>
+    </div>
+</section>{% endblock %}

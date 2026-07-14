@@ -1,0 +1,132 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}JETAMA PeopleOS{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  {% if user.is_authenticated %}
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <img src="{% static 'images/JETAMA SDN BHD LOGO (TRANSPARENT).png' %}" alt="JETAMA">
+          <div>
+            <strong>PeopleOS</strong>
+            <span>HR &amp; ESG Suite</span>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <p>Workspace</p>
+          <a class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+            <i>⌂</i><span>Dashboard</span>
+          </a>
+          <a class="{% if 'employee' in request.resolver_match.url_name or request.resolver_match.url_name == 'my_profile' %}active{% endif %}"
+             href="{% if user.is_hr_admin or user.is_superuser %}{% url 'employee_list' %}{% else %}{% url 'my_profile' %}{% endif %}">
+            <i>◎</i><span>Employees</span>
+          </a>
+          <a class="{% if 'attendance' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'attendance_list' %}">
+            <i>◷</i><span>Attendance</span>
+          </a>
+          <a class="{% if 'leave' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'leave_list' %}">
+            <i>◇</i><span>Leave</span>
+          </a>
+          <a class="{% if 'claim' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'claim_list' %}">
+            <i>▱</i><span>Claims</span>
+          </a>
+          <a class="{% if 'payroll' in request.resolver_match.url_name or 'payslip' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'payroll_list' %}">
+            <i>RM</i><span>Payroll</span>
+          </a>
+
+          {% if user.is_hr_admin or user.is_superuser or user.role == 'GM_FINANCE' or user.role == 'CEO' %}
+            <a class="{% if 'voucher' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'voucher_list' %}">
+              <i>▧</i><span>Payment Vouchers</span>
+            </a>
+          {% endif %}
+
+          <a class="{% if 'maintenance' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'maintenance_list' %}">
+            <i>⌘</i><span>Maintenance</span>
+          </a>
+
+          <p>Company</p>
+          <a class="{% if 'notice' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'notice_list' %}">
+            <i>◉</i><span>Notices</span>
+          </a>
+          <a class="{% if 'policy' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'policy_list' %}">
+            <i>▤</i><span>Policies</span>
+          </a>
+          <a class="{% if 'circular' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'circular_list' %}">
+            <i>◫</i><span>Circulars</span>
+          </a>
+
+          {% if user.is_hr_admin or user.is_superuser %}
+            <a class="{% if request.resolver_match.url_name == 'reports' %}active{% endif %}" href="{% url 'reports' %}">
+              <i>⌁</i><span>Reports</span>
+            </a>
+          {% endif %}
+
+          <a class="{% if request.resolver_match.url_name == 'settings_page' %}active{% endif %}" href="{% url 'settings_page' %}">
+            <i>⚙</i><span>Settings</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-profile">
+          <div class="avatar">{{ user.display_name|slice:':1'|upper }}</div>
+          <div>
+            <strong>{{ user.display_name }}</strong>
+            <span>{{ user.get_role_display }}</span>
+          </div>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" title="Sign out">↗</button>
+          </form>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <button class="mobile-toggle" type="button" onclick="document.body.classList.toggle('sidebar-open')">☰</button>
+          <div class="top-search">
+            <span>⌕</span>
+            <input placeholder="Search employees, requests, policies...">
+            <kbd>⌘ K</kbd>
+          </div>
+          <div class="top-actions">
+            <button class="icon-btn" type="button">?</button>
+            <a class="icon-btn notification-button {% if unread_notification_count %}badge-dot{% endif %}"
+               href="{% url 'notification_list' %}" title="Notifications">
+              ♧
+              {% if unread_notification_count %}<b>{{ unread_notification_count }}</b>{% endif %}
+            </a>
+            <a class="avatar sm" href="{% url 'my_profile' %}">{{ user.display_name|slice:':1'|upper }}</a>
+          </div>
+        </header>
+
+        <main class="content">
+          {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+          {% block content %}{% endblock %}
+        </main>
+      </section>
+    </div>
+  {% else %}
+    <main class="public-main">
+      {% for message in messages %}
+        <div class="alert {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+      {% block public_content %}{% endblock %}
+    </main>
+  {% endif %}
+
+  <script src="{% static 'js/app.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

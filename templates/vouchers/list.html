@@ -1,0 +1,34 @@
+{% extends 'base.html' %}{% block content %}<div class="page-head">
+    <div><span class="eyebrow">Finance</span>
+        <h1>Payment Vouchers</h1>
+        <p>Prepare, approve, pay and retain supporting records.</p>
+    </div><a class="btn primary" href="{% url 'voucher_create' %}">New voucher</a>
+</div>
+<section class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Voucher</th>
+                    <th>Payee</th>
+                    <th>Purpose</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>{% for v in vouchers %}<tr>
+                    <td><strong>{{ v.voucher_no }}</strong></td>
+                    <td>{{ v.payee_name }}</td>
+                    <td>{{ v.purpose|truncatechars:48 }}</td>
+                    <td>RM {{ v.amount|floatformat:2 }}</td>
+                    <td><span class="status {{ v.status|lower }}">{{ v.get_status_display }}</span></td>
+                    <td>{{ v.created_at|date:'d M Y' }}</td>
+                    <td><a class="btn small" href="{% url 'voucher_detail' v.pk %}">Open</a></td>
+                </tr>{% empty %}<tr>
+                    <td colspan="7" class="empty-cell">No payment vouchers.</td>
+                </tr>{% endfor %}</tbody>
+        </table>
+    </div>
+</section>{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block content %}<div class="page-head">
+    <h1>Review leave application</h1>
+</div>
+<section class="panel">
+    <dl class="details">
+        <dt>Employee</dt>
+        <dd>{{ leave.employee.display_name }}</dd>
+        <dt>Period</dt>
+        <dd>{{ leave.start_date }} – {{ leave.end_date }} ({{ leave.total_days }} days)</dd>
+        <dt>Reason</dt>
+        <dd>{{ leave.reason }}</dd>
+    </dl>
+    <form method="post" class="form-grid">{% csrf_token %}{{ form.as_p }}<button class="btn primary">Save
+            decision</button></form>
+</section>{% endblock %}

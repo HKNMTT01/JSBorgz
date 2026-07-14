@@ -1,0 +1,5 @@
+from django.contrib import admin
+from .models import AttendanceRecord
+@admin.register(AttendanceRecord)
+class AttendanceAdmin(admin.ModelAdmin):
+ list_display=('employee','date','status','clock_in','clock_out'); list_filter=('status','date'); search_fields=('employee__full_name','employee__email')

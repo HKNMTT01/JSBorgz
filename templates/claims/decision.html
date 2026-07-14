@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block content %}<div class="page-head">
+    <h1>Review claim</h1>
+</div>
+<section class="panel">
+    <dl class="details">
+        <dt>Employee</dt>
+        <dd>{{ claim.employee.display_name }}</dd>
+        <dt>Claim</dt>
+        <dd>{{ claim.title }} · {{ claim.category }}</dd>
+        <dt>Amount</dt>
+        <dd>RM {{ claim.amount }}</dd>
+        <dt>Description</dt>
+        <dd>{{ claim.description|default:'—' }}</dd>
+    </dl>
+    <form method="post" class="form-grid">{% csrf_token %}{{ form.as_p }}<button class="btn primary">Save
+            decision</button></form>
+</section>{% endblock %}

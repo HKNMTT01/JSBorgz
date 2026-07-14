@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Reports · PeopleOS{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Intelligence</span>
+        <h1>Reports & analytics</h1>
+        <p>Decision-ready insights across people operations.</p>
+    </div>
+    <button class="btn primary" onclick="window.print()">⇩ Export report</button>
+</div>
+<div class="report-grid">
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Department headcount</h2>
+                <p>Active employees by department</p>
+            </div>
+        </div>
+        <div class="bar-chart large">
+            {% for d in dept_headcount %}
+            <div class="bar-row">
+                <span>{{ d.name }}</span>
+                <div><i style="width:{% widthratio d.total 100 100 %}%"></i></div>
+                <strong>{{ d.total }}</strong>
+            </div>
+            {% empty %}
+            <div class="empty-mini">No department data.</div>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Leave status</h2>
+            </div>
+        </div>
+        <div class="donut-wrap">
+            <div class="donut"></div>
+            <ul>
+                {% for x in leave_by_status %}
+                <li>
+                    <i></i>
+                    <span>{{ x.status|title }}</span>
+                    <strong>{{ x.total }}</strong>
+                </li>
+                {% empty %}
+                <li>No data</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Claims pipeline</h2>
+            </div>
+        </div>
+        <div class="stat-list">
+            {% for x in claim_by_status %}
+            <div>
+                <span>{{ x.status|title }}</span>
+                <strong>{{ x.total }}</strong>
+            </div>
+            {% empty %}
+            <div>No data</div>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Attendance mix</h2>
+            </div>
+        </div>
+        <div class="stat-list">
+            {% for x in attendance_by_status %}
+            <div>
+                <span>{{ x.status|title }}</span>
+                <strong>{{ x.total }}</strong>
+            </div>
+            {% empty %}
+            <div>No data</div>
+            {% endfor %}
+        </div>
+    </section>
+</div>{% endblock %}

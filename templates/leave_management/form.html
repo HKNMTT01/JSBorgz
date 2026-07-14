@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block content %}<div class="page-head">
+    <h1>Apply for leave</h1>
+</div>
+<section class="panel form-card">
+    <form method="post" enctype="multipart/form-data" class="form-grid">{% csrf_token %}{{ form.non_field_errors }}{% for field in form %}<label>{{ field.label }}{{ field }}{{ field.errors }}</label>{% endfor %}<button
+            class="btn primary">Submit application</button></form>
+</section>{% endblock %}

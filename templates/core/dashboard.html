@@ -1,0 +1,146 @@
+{% extends 'base.html' %}{% block title %}Dashboard · JETAMA PeopleOS{% endblock %}{% block content %}
+<div class="page-head">
+    <div><span class="eyebrow">Overview</span>
+        <h1>Good day, {{ user.display_name|default:'there' }}</h1>
+        <p>Here is what is happening across your workplace today.</p>
+    </div>
+    <div class="head-actions"><span class="date-pill">Today · {% now "d M Y" %}</span>{% if admin_view %}<a
+            class="btn primary" href="{% url 'employee_create' %}">＋ Add employee</a>{% endif %}</div>
+</div>
+{% if admin_view %}
+<div class="metrics-grid">
+    <article class="metric-card">
+        <div class="metric-icon blue">◎</div>
+        <div><span>Total employees</span><strong>{{ employee_count }}</strong><small>Active workforce</small></div><b
+            class="trend up">↗</b>
+    </article>
+    <article class="metric-card">
+        <div class="metric-icon green">◇</div>
+        <div><span>Pending leave</span><strong>{{ pending_leave_count }}</strong><small>Awaiting action</small></div><b
+            class="trend">→</b>
+    </article>
+    <article class="metric-card">
+        <div class="metric-icon orange">▱</div>
+        <div><span>Pending claims</span><strong>{{ pending_claim_count }}</strong><small>In approval flow</small></div>
+        <b class="trend">→</b>
+    </article>
+    <article class="metric-card">
+        <div class="metric-icon purple">◫</div>
+        <div><span>Departments</span><strong>{{ department_count }}</strong><small>Company structure</small></div><b
+            class="trend up">↗</b>
+    </article>
+</div>
+<div class="dashboard-grid">
+    <section class="panel span-2">
+        <div class="panel-head">
+            <div>
+                <h2>Workforce overview</h2>
+                <p>Headcount distribution by department</p>
+            </div><a href="{% url 'reports' %}">View report →</a>
+        </div>
+        <div class="bar-chart">{% for d in department_summary %}<div class="bar-row"><span>{{ d.name }}</span>
+                <div><i style="width:{% widthratio d.total employee_count 100 %}%"></i></div><strong>{{ d.total
+                    }}</strong>
+            </div>{% empty %}<div class="empty-mini">Add departments and employees to see analytics.</div>{% endfor %}
+        </div>
+    </section>
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Quick actions</h2>
+                <p>Common HR tasks</p>
+            </div>
+        </div>
+        <div class="quick-grid"><a href="{% url 'employee_create' %}"><b>＋</b><span>Add employee</span></a><a
+                href="{% url 'attendance_create' %}"><b>◷</b><span>Record attendance</span></a><a
+                href="{% url 'notice_create' %}"><b>◉</b><span>Publish notice</span></a><a
+                href="{% url 'reports' %}"><b>⌁</b><span>Open reports</span></a></div>
+    </section>
+</div>
+<div class="dashboard-grid">
+    <section class="panel span-2">
+        <div class="panel-head">
+            <div>
+                <h2>Recent leave requests</h2>
+                <p>Latest employee submissions</p>
+            </div><a href="{% url 'leave_list' %}">View all →</a>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Type</th>
+                        <th>Period</th>
+                        <th>Days</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>{% for item in recent_leaves %}<tr>
+                        <td><a class="person" href="{% url 'employee_detail' item.employee_id %}"><span
+                                    class="avatar xs">{{ item.employee.display_name|slice:':1' }}</span>
+                                <div><strong>{{ item.employee.display_name }}</strong><small>{{
+                                        item.employee.department|default:'Unassigned' }}</small></div>
+                            </a></td>
+                        <td>{{ item.get_leave_type_display }}</td>
+                        <td>{{ item.start_date|date:'d M' }} – {{ item.end_date|date:'d M Y' }}</td>
+                        <td>{{ item.total_days }}</td>
+                        <td><span class="status {{ item.status|lower }}">{{ item.get_status_display }}</span></td>
+                    </tr>{% empty %}<tr>
+                        <td colspan="5" class="empty-cell">No leave requests yet.</td>
+                    </tr>{% endfor %}</tbody>
+            </table>
+        </div>
+    </section>
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>New employees</h2>
+                <p>Recently joined</p>
+            </div>
+        </div>
+        <div class="people-list">{% for e in recent_employees %}<a href="{% url 'employee_detail' e.pk %}"><span
+                    class="avatar">{{ e.display_name|slice:':1' }}</span>
+                <div><strong>{{ e.display_name }}</strong><small>{{ e.position|default:e.get_role_display }}</small>
+                </div><time>{{ e.date_joined|date:'d M' }}</time>
+            </a>{% empty %}<div class="empty-mini">No employees available.</div>{% endfor %}</div>
+    </section>
+</div>
+{% else %}
+<div class="metrics-grid employee">
+    <article class="metric-card">
+        <div class="metric-icon blue">◇</div>
+        <div><span>Leave balance</span><strong>{{ leave_remaining }}</strong><small>of {{ user.leave_entitlement }} days
+                remaining</small></div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-icon green">✓</div>
+        <div><span>Leave used</span><strong>{{ leave_used }}</strong><small>Approved this year</small></div>
+    </article>
+    <article class="metric-card">
+        <div class="metric-icon orange">▱</div>
+        <div><span>My claims</span><strong>{{ my_claims|length }}</strong><small>Recent submissions</small></div>
+    </article>
+</div>
+<div class="dashboard-grid">
+    <section class="panel span-2">
+        <div class="panel-head">
+            <div>
+                <h2>My leave requests</h2>
+                <p>Your recent leave activity</p>
+            </div><a class="btn small" href="{% url 'leave_apply' %}">Apply leave</a>
+        </div>{% include 'leave_management/_table.html' with leaves=my_leaves %}
+    </section>
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Quick actions</h2>
+            </div>
+        </div>
+        <div class="quick-grid"><a href="{% url 'leave_apply' %}"><b>◇</b><span>Apply leave</span></a><a
+                href="{% url 'claim_create' %}"><b>▱</b><span>New claim</span></a><a
+                href="{% url 'attendance_list' %}"><b>◷</b><span>Attendance</span></a><a
+                href="{% url 'policy_list' %}"><b>▤</b><span>Policies</span></a></div>
+    </section>
+</div>{% endif %}
+{% endblock %}

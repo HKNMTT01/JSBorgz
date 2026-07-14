@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% block content %}<div class="page-head">
+    <h1>{{ title }}</h1>
+</div>
+<section class="panel form-card">
+    <form method="post" class="form-grid">{% csrf_token %}{{ form.non_field_errors }}{% for field in form %}<label>{{
+            field.label }}{{ field }}{{ field.errors }}</label>{% endfor %}<button class="btn primary">Save
+            employee</button></form>
+</section>{% endblock %}

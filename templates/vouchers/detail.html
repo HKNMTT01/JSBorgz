@@ -1,0 +1,44 @@
+{% extends 'base.html' %}{% block content %}<div class="page-head">
+    <div><span class="eyebrow">Payment voucher</span>
+        <h1>{{ voucher.voucher_no }}</h1>
+        <p>{{ voucher.payee_name }}</p>
+    </div>
+    <div class="head-actions">{% if voucher.supporting_object_path %}<a class="btn" target="_blank"
+            href="{% url 'voucher_file' voucher.pk 'support' %}">Open support</a>{% endif %}{% if voucher.receipt_object_path %}<a class="btn" target="_blank"
+            href="{% url 'voucher_file' voucher.pk 'receipt' %}">Open receipt</a>{% endif %}</div>
+</div>
+<section class="panel">
+    <div class="panel-head">
+        <h2>Voucher details</h2><span class="status {{ voucher.status|lower }}">{{ voucher.get_status_display }}</span>
+    </div>
+    <dl class="info-list">
+        <div>
+            <dt>Payee</dt>
+            <dd>{{ voucher.payee_name }}</dd>
+        </div>
+        <div>
+            <dt>Purpose</dt>
+            <dd>{{ voucher.purpose }}</dd>
+        </div>
+        <div>
+            <dt>Amount</dt>
+            <dd>RM {{ voucher.amount|floatformat:2 }}</dd>
+        </div>
+        <div>
+            <dt>Payment method</dt>
+            <dd>{{ voucher.payment_method }}</dd>
+        </div>
+        <div>
+            <dt>Prepared by</dt>
+            <dd>{{ voucher.prepared_by.display_name }}</dd>
+        </div>
+    </dl>
+    <div class="form-actions" style="padding:20px">{% for action,label in voucher_actions %}{% endfor %}<form
+            method="post" action="{% url 'voucher_action' voucher.pk 'submit' %}">{% csrf_token %}<button
+                class="btn">Submit</button></form>
+        <form method="post" action="{% url 'voucher_action' voucher.pk 'approve' %}">{% csrf_token %}<button
+                class="btn primary">Approve</button></form>
+        <form method="post" action="{% url 'voucher_action' voucher.pk 'paid' %}">{% csrf_token %}<button
+                class="btn">Mark paid</button></form>
+    </div>
+</section>{% endblock %}

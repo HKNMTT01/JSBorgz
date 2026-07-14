@@ -1,0 +1,22 @@
+{% extends 'base.html' %}{% block content %}<div class="page-head">
+    <div><span class="eyebrow">
+            {{ page_eyebrow }}</span>
+        <h1>{{ page_title }}</h1>
+        <p>Complete the information below. Required fields are marked automatically.</p>
+    </div><a class="btn ghost" href="javascript:history.back()">← Back</a>
+</div>
+<section class="panel form-panel">
+    <form method="post" enctype="multipart/form-data" class="erp-form">
+        {% csrf_token %}{% if form.non_field_errors %}<div class="alert error">
+            {{ form.non_field_errors }}</div>{% endif %}<div class="form-grid">
+            {% for field in form %}<div
+                class="field {% if field.name == 'address' or field.name == 'reason' or field.name == 'description' or field.name == 'notes' %}full{% endif %}">
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}{% if field.field.required %}<em>*</em>{% endif %}</label>{{ field }}{% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}{% for error in field.errors %}<span
+                    class="field-error">
+                    {{ error }}</span>{% endfor %}</div>{% endfor %}</div>
+        <div class="form-actions"><a class="btn ghost" href="javascript:history.back()">Cancel</a><button
+                class="btn primary" type="submit">
+                {{ submit_label|default:'Save changes' }}</button></div>
+    </form>
+</section>{% endblock %}

@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<div class="page-head"><div><p class="eyebrow">Expense management</p><h1>Claims</h1></div><a class="btn primary" href="{% url 'claim_create' %}">Submit claim</a></div><section class="panel">{% include 'claims/_table.html' %}</section>{% endblock %}
