@@ -1,4 +1,5 @@
 .venv/
+hrEnv/
 venv/
 __pycache__/
 *.py[cod]
@@ -6,6 +7,7 @@ __pycache__/
 db.sqlite3
 staticfiles/
 .pytest_cache/
+media/
 .vscode/
 .idea/
 .DS_Store
